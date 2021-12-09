@@ -29,7 +29,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -80,8 +80,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(Lib)\mqtt\paho-c\include;$(Lib)\mqtt\paho-cpp\include;D:\Develop\Lib\jsoncpp\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(Lib)\mqtt\paho-c\lib;$(Lib)\mqtt\paho-cpp\lib;D:\Develop\Lib\jsoncpp\build\lib\Debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(Lib)\mqtt\paho-c\include;$(Lib)\mqtt\paho-cpp\include;$(Lib)\jsoncpp\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(Lib)\mqtt\paho-c\lib;$(Lib)\mqtt\paho-cpp\lib;$(Lib)\jsoncpp\build\lib\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
