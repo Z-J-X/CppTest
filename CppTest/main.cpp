@@ -1,36 +1,68 @@
 #include<iostream>
-#include<string>
-#include<map>
-#include<chrono>
+#include<sstream>
 
-struct ci_less //: std::binary_function<std::string, std::string, bool>
+void toStr()
 {
-	// case-independent (ci) compare_less binary function
-	struct nocase_compare //: public std::binary_function<unsigned char, unsigned char, bool>
+	std::stringstream ss;
+	ss << "hello world" << 2020 << 3.1415926;
+	std::string str;
+	ss >> str;
+	ss >> str;
+	ss >> str;
+	//or :
+	//str = ss.str();
+	std::cout << str << std::endl;
+}
+
+void toNumber()
+{
+	std::stringstream ss;
+	ss << "3.1415";
+	float data;
+	ss >> data;
+	std::cout << data << std::endl;
+}
+
+class Demo
+{
+public:
+	Demo()
 	{
-		bool operator()(const unsigned char& c1, const unsigned char& c2) const
-		{
-			return tolower(c1) < tolower(c2);
-		}
-	};
-	bool operator()(const std::string& s1, const std::string& s2) const
+		//throw std::invalid_argument("--- Virtual interface name too long.");
+	}
+	~Demo()
 	{
-		return std::lexicographical_compare(s1.begin(), s1.end(), // source range
-			s2.begin(), s2.end(), // dest range
-			nocase_compare());    // comparison
+		std::cout << "hello" << std::endl;
 	}
 };
 
+unsigned short checksum(unsigned short* buffer, int size)
+{
+	unsigned long cksum = 0;
+	while (size > 1)
+	{
+		cksum += *buffer++;
+		size -= sizeof(unsigned short);
+	}
+	if (size)
+	{
+		cksum += *(unsigned short*)buffer;
+	}
+	cksum = (cksum >> 16) + (cksum & 0xffff);
+	cksum += (cksum >> 16);
+	return (unsigned short)(~cksum);
+}
+
 int main()
 {
-	std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds> timePoint =
-		std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
-	auto timeNow = std::chrono::duration_cast<std::chrono::milliseconds>(timePoint.time_since_epoch());
-	size_t nTime = timeNow.count();//获取时间戳精确到微秒
-
-	double a = 1638845727.6457758;
-	size_t t = a * 1000-3000;
-	std::cout << t << std::endl;
-	std::cout << nTime << std::endl;
+	unsigned char data[] = { 0x45,0x00,0x00,0x21,0xCB,0xBA,0x40,0x00,0x40,0x11,0,0,0xC0,0xA8,0x64,0x05,0xC0,0xA8,0x0A,0x05 };
+	unsigned char tmp[20] = { 0 };
+	for (int i = 0; i < 20; i++)
+	{
+		tmp[i] = data[19 - i];
+	}
+	unsigned short* sdata = (unsigned short*)tmp;
+	std::cout <<std::hex <<sdata[9] << std::endl;
+	std::cout << checksum(sdata, 20);
 	return 0;
 }

@@ -24,7 +24,13 @@
     <ClCompile Include="typename.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="addr_to_sys_title.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
