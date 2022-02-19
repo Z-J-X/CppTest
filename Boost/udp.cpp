@@ -1,3 +1,4 @@
+#if 0
 #pragma warning (disable:4996)
 #include <boost/asio.hpp> 
 #include <boost/asio/ip/udp.hpp>
@@ -36,6 +37,7 @@ int main(int argc, char** argv)
                     std::cout << std::setiosflags(std::ios::uppercase) << std::hex << std::setw(2) << std::setfill('0') << data << " ";
                 }
                 std::cout << std::endl;
+                sock.send_to(boost::asio::buffer({0x11,0x22,0x33,0x44,0x55,0x66}), cep);
             }
         }
         else if (argc >= 6)
@@ -84,3 +86,4 @@ int main(int argc, char** argv)
     }
     return 0;
 }
+#endif

@@ -1,6 +1,8 @@
 #include <json/json.h>
+#include <sstream>
 #include <iostream>
 #include <fstream>
+
 
 bool readFromStream()
 {
@@ -116,6 +118,33 @@ int _main() {
 	writer->write(val, &std::cout);
 	return 0;
 }
+
+
+
+Json::Value ReadFromString(std::string& strJson)
+{
+	try {
+		const auto rawJsonLength = static_cast<int>(strJson.length());
+
+		JSONCPP_STRING err;
+		Json::Value root;
+
+		Json::CharReaderBuilder builder;
+		const std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
+		if (!reader->parse(strJson.c_str(), strJson.c_str() + rawJsonLength, &root, &err))
+		{
+			std::cout << "error" << std::endl;
+			return false;
+		}
+
+		return root;
+	}
+	catch (std::exception& ec)
+	{
+		return false;
+	}
+}
+
 std::string WriteToString(Json::Value jsRoot)
 {
 	std::string ret;
@@ -130,37 +159,18 @@ std::string WriteToString(Json::Value jsRoot)
 		return ret;
 	}
 }
-
-
-Json::Value ReadFromString(std::string& strJson)
-{
-	try {
-		const auto rawJsonLength = static_cast<int>(strJson.length());
-
-		JSONCPP_STRING err;
-		Json::Value root;
-
-		Json::CharReaderBuilder builder;
-		const std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
-		if (!reader->parse(strJson.c_str(), strJson.c_str() + rawJsonLength, &root, &err)) //½âÎö
-		{
-			std::cout << "error" << std::endl;
-			return false;
-		}
-
-		return root;
-	}
-	catch (std::exception& ec)
-	{
-		return false;
-	}
-}
-
 int main()
 {
 	try {
-		std::cout << sizeof(long) << std::endl;
-		
+		Json::Value root,test;
+
+		root["dsasd"].append(test);
+		root["a"].resize(0);
+		std::string str = "dasd+dasdas+ds";
+		std::cout << str.find("+") << std::endl;
+		std::cout << str.find("+",4+1) << std::endl;;
+		std::cout << WriteToString(root) << std::endl;
+
 	}
 	catch (std::exception& ec)
 	{

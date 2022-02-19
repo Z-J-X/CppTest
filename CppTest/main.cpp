@@ -1,68 +1,88 @@
-#include<iostream>
-#include<sstream>
+#pragma warning (disable:4996)
+#include <iostream>
+#include <string>
+#include <fstream>
+#include"base64.h"
+using namespace std;
 
-void toStr()
-{
-	std::stringstream ss;
-	ss << "hello world" << 2020 << 3.1415926;
-	std::string str;
-	ss >> str;
-	ss >> str;
-	ss >> str;
-	//or :
-	//str = ss.str();
-	std::cout << str << std::endl;
-}
-
-void toNumber()
-{
-	std::stringstream ss;
-	ss << "3.1415";
-	float data;
-	ss >> data;
-	std::cout << data << std::endl;
-}
-
-class Demo
+template<class T>
+class Stream
 {
 public:
-	Demo()
+	Stream(T& t):handle(t)
 	{
-		//throw std::invalid_argument("--- Virtual interface name too long.");
-	}
-	~Demo()
+		 
+	};
+	template<class D>
+	T& operator <<( D&& str)
 	{
-		std::cout << "hello" << std::endl;
+		handle << str;
+		return handle;
 	}
+private:
+	T& handle;
 };
-
-unsigned short checksum(unsigned short* buffer, int size)
-{
-	unsigned long cksum = 0;
-	while (size > 1)
-	{
-		cksum += *buffer++;
-		size -= sizeof(unsigned short);
-	}
-	if (size)
-	{
-		cksum += *(unsigned short*)buffer;
-	}
-	cksum = (cksum >> 16) + (cksum & 0xffff);
-	cksum += (cksum >> 16);
-	return (unsigned short)(~cksum);
-}
 
 int main()
 {
-	unsigned char data[] = { 0x45,0x00,0x00,0x21,0xCB,0xBA,0x40,0x00,0x40,0x11,0,0,0xC0,0xA8,0x64,0x05,0xC0,0xA8,0x0A,0x05 };
-	unsigned char tmp[20] = { 0 };
-	for (int i = 0; i < 20; i++)
+	
+	//Stream<ostream> Test(std::cout);
+	//Test << "hello";
+	//Test << 10 << endl;
+	//string str = "dasdas";
+	//Test << str << endl;
+
+	//std::cout << "---------------------------------" << endl;
+	//fstream File;
+	//File.open("file.txt", std::ios::app);
+	//Stream<fstream> sTest(File);
+	//sTest << "dadadsa" << endl;
+	//sTest << "ok" << endl << "dasdasdasd" << endl;
+
+	const std::string str = base64_decode("AAAACcqLyPg=");
+	std::cout << str.size()<< std::endl;
+	char buf[100] = {0};
+	for (int i = 0; i < str.size(); i++)
 	{
-		tmp[i] = data[19 - i];
+		sprintf_s(buf + 2 * i, 3,"%02X", str[i]&0xff);
 	}
-	unsigned short* sdata = (unsigned short*)tmp;
-	std::cout <<std::hex <<sdata[9] << std::endl;
-	std::cout << checksum(sdata, 20);
-	return 0;
+	std::string ret1(buf);
+	std::cout << ret1<<ret1.length() << std::endl;
+
+	std::string ss = "application/1/device/+/command/down";
+	std::cout << ss.size() << ss.length() << std::endl;
+	if (ss.rfind("down") != std::string::npos)
+	{
+		std::cout << "ok" << std::endl;
+	}
+	std::string str2;
+	std::cout << str2.size() << str2.length() << std::endl;;
+
+	char  ttt[] = "2022-02-08T02:54:22.179771394Z";
+	char retv[13] = { 0 };
+#if defined WIN32 || WIN64
+	sscanf_s(ttt, "20%2s-%2s-%2sT%2s:%2s:%2s", retv,13, retv + 2,3, retv + 4, 3, retv + 6, 3, retv + 8, 3, retv + 10, 3);
+#else
+	sscanf(ttt, "20%2s-%2s-%2sT%2s:%2s:%2s", retv, retv + 2, retv + 4, retv + 6, retv + 8, retv + 10);
+#endif
+	
+	std::string asdas(retv);
+	std::cout << asdas.size() << std::endl;
+
+	std::cout << "---------------------------------" << std::endl;
+	int* a = new int(1);
+	std::shared_ptr<int> ptr;
+	if(ptr == nullptr)
+	ptr = std::shared_ptr<int>(a);
+	std::cout << *ptr << std::endl;
+
+	int i = 0;
+	do
+	{
+		i++;
+		if (i == 1)
+			continue;
+	} while (0);
+	std::cout << i << std::endl;
+	throw runtime_error("das");
 }

@@ -21,7 +21,10 @@
     <ClCompile Include="sync_publish.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="publish.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="consume.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

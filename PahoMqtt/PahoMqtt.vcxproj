@@ -72,8 +72,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(Lib)\jsoncpp_x86-windows\include;$(Lib)\mqtt\paho-c\include;$(Lib)\mqtt\paho-cpp\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(Lib)\jsoncpp_x86-windows\debug\lib;$(Lib)\mqtt\paho-c\lib;$(Lib)\mqtt\paho-cpp\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(Lib)\mqtt\paho-c\include;$(Lib)\mqtt\paho-cpp\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(Lib)\mqtt\paho-c\lib;$(Lib)\mqtt\paho-cpp\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -96,7 +96,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>jsoncpp.lib;paho-mqtt3a.lib;paho-mqtt3c.lib;paho-mqttpp3-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>paho-mqtt3a.lib;paho-mqtt3c.lib;paho-mqttpp3-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -145,7 +145,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="consume.cpp" />
+    <ClCompile Include="publish.cpp" />
     <ClCompile Include="sync_consume.cpp" />
     <ClCompile Include="sync_publish.cpp" />
   </ItemGroup>
