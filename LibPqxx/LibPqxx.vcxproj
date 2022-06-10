@@ -21,15 +21,15 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{7dd1d3d3-64a2-4ed1-8e53-f9a8d509807d}</ProjectGuid>
-    <RootNamespace>CppTest</RootNamespace>
+    <ProjectGuid>{b25169a9-078a-4198-b288-57cdcdd7fc8e}</ProjectGuid>
+    <RootNamespace>LibPqxx</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -78,6 +78,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(Lib)\libpq_x64-windows\include;$(Lib)\libpqxx_x64-windows\include;$(Lib)\openssl_x64-windows\include;$(Lib)\boost_1_77_0;$(IncludePath)</IncludePath>
+    <LibraryPath>$(Lib)\libpq_x64-windows\debug\lib;$(Lib)\libpqxx_x64-windows\debug\lib;$(Lib)\openssl_x64-windows\debug\lib;$(Lib)\boost_1_77_0\stage\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -88,7 +90,6 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -115,13 +116,14 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libpq.lib;pqxx.lib;libcrypto.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -132,8 +134,6 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,16 +143,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="base64.cpp" />
-    <ClCompile Include="filesystem.cpp" />
-    <ClCompile Include="callback.cpp" />
-    <ClCompile Include="addr_to_sys_title.cpp" />
-    <ClCompile Include="typename.cpp" />
+    <ClCompile Include="demo1.cpp" />
+    <ClCompile Include="demo10.cpp" />
+    <ClCompile Include="demo11.cpp" />
+    <ClCompile Include="demo2.cpp" />
+    <ClCompile Include="demo3.cpp" />
+    <ClCompile Include="demo4.cpp" />
+    <ClCompile Include="demo5.cpp" />
+    <ClCompile Include="demo6.cpp" />
+    <ClCompile Include="demo7.cpp" />
+    <ClCompile Include="demo8.cpp" />
+    <ClCompile Include="demo9.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PqxxHandle.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="base64.h" />
-    <ClInclude Include="thread_queue.h" />
+    <ClInclude Include="PqxxHandle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

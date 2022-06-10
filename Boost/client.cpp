@@ -1,28 +1,30 @@
 #include <boost/asio.hpp> 
-#include <boost/asio/ip/udp.hpp>
+#include <boost/asio/ip/tcp.hpp>
 #include <iostream>
 
-
-int main2(int argc,char** argv)
+int main11(int argc, char** argv)
 {
     try
     {
-        boost::asio::io_service m_io;
-        auto localAddr = boost::asio::ip::address::from_string(argv[1]);
-        auto clientAddr = boost::asio::ip::address::from_string(argv[2]);
-        
-        boost::asio::ip::udp::endpoint localEp(localAddr, 8888);
-        boost::asio::ip::udp::endpoint clientEp(clientAddr, 4059);
+        boost::asio::io_service io;
+        boost::asio::ip::address addr;
+        addr = addr.from_string("10.32.155.5");
+        boost::asio::ip::tcp::endpoint ep(addr, 8888);
+       
+        for (int i = 0; i < std::stoi(argv[1]); i++)
+        {
+            auto ptrSock = new boost::asio::ip::tcp::socket(io);
 
-        boost::asio::ip::udp::socket sock(m_io, localEp);
-
-        sock.send_to(boost::asio::buffer(std::string(argv[3])), clientEp);
+            boost::system::error_code ec;
+            ptrSock->connect(ep, ec);
+            if (ec)
+                std::cout << ec.message() << std::endl;
+        }
     }
-    catch (std::exception& ec)
+    catch (std::exception& e)
     {
-        std::cout << ec.what() << std::endl;
+        std::cout << "error:" << e.what() << std::endl;
     }
-    
 
     return 0;
 }

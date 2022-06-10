@@ -1,34 +1,37 @@
 #include <msgpack.hpp>
-#include <vector>
-#include <string>
 #include <iostream>
+#include <string>
 
-int main()
-{
-	msgpack::sbuffer sbuf;
-	msgpack::packer<msgpack::sbuffer> pk(&sbuf);
-	pk.pack_array(1);
-	pk.pack_map(1);
-	pk.pack("test").pack("{adaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasd}");
+int main() {
+    // serializes multiple objects using msgpack::packer.
+    msgpack::sbuffer buffer1,buffer2;
 
-	msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
-	msgpack::object obj = oh.get();
-	std::cout << obj << std::endl;;
-	std::map<std::string, msgpack::object> mp;
+    std::vector<std::string> vec;
+    vec.push_back("Hello");
+    vec.push_back("MessagePack");
 
-	//auto ptr = std::make_shared<std::vector<std::string>>();
-	//ptr->push_back("dasdas");
-	//ptr->push_back("aaa");
-	//pk.pack("map").pack(ptr);
-
-	//msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
-	//msgpack::object obj = oh.get();
-	//std::cout << obj << std::endl;;
+    msgpack::packer<msgpack::sbuffer> pk1(&buffer1);
+    msgpack::packer<msgpack::sbuffer> pk2(&buffer2);
+    pk1.pack(std::string("Log message ... 1"));
+    pk1.pack(std::string("Log message ... 2"));
+    pk1.pack(std::string("Log message ... 3"));
 
 
-	//std::map<std::string, msgpack::object> mp;
-	//obj >> mp;
-	//auto ptr2 = std::make_shared<std::vector<std::string>>();
-	//mp["map"].convert(ptr2);
-	//std::cout << ptr2->at(0);
+    pk2.pack(vec);
+    pk2.pack(std::string("Log message ... 4"));
+
+    // deserializes these objects using msgpack::unpacker.
+    msgpack::unpacker pac;
+
+    // feeds the buffer.
+    pac.reserve_buffer(buffer1.size()+buffer2.size());
+    memcpy(pac.buffer(), buffer1.data(), buffer1.size());
+    memcpy(pac.buffer()+ buffer1.size(), buffer2.data(), buffer2.size());
+    pac.buffer_consumed(buffer1.size()+ buffer2.size());
+
+    // now starts streaming deserialization.
+    msgpack::object_handle oh;
+    while (pac.next(oh)) {
+        std::cout << oh.get() << std::endl;
+    }
 }

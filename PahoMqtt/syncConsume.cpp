@@ -1,35 +1,3 @@
-// sync_consume.cpp
-//
-// This is a Paho MQTT C++ client, sample application.
-//
-// This application is an MQTT consumer/subscriber using the C++ synchronous
-// client interface, which uses the queuing API to receive messages.
-//
-// The sample demonstrates:
-//  - Connecting to an MQTT server/broker
-//  - Using a persistent (non-clean) session
-//  - Subscribing to multiple topics
-//  - Receiving messages through the queueing consumer API
-//  - Recieving and acting upon commands via MQTT topics
-//  - Auto reconnect
-//  - Updating auto-reconnect data
-//
-
-/*******************************************************************************
- * Copyright (c) 2013-2020 Frank Pagliughi <fpagliughi@mindspring.com>
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
- *
- * The Eclipse Public License is available at
- *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at
- *   http://www.eclipse.org/org/documents/edl-v10.php.
- *
- * Contributors:
- *    Frank Pagliughi - initial implementation and documentation
- *******************************************************************************/
 #if 0
 #include <iostream>
 #include <cstdlib>
@@ -38,13 +6,13 @@
 #include <cctype>
 #include <thread>
 #include <chrono>
-#include "mqtt/client.h"
+#include <mqtt/client.h>
 
 using namespace std;
 using namespace std::chrono;
 
-const string SERVER_ADDRESS	{ "10.32.233.80:1883" };
-const string CLIENT_ID		{ "paho_cpp_sync_consume" };
+const string SERVER_ADDRESS{ "tcp://10.32.233.80:1883" };
+const string CLIENT_ID{ "paho_cpp_sync_consume" };
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -65,7 +33,7 @@ int main(int argc, char* argv[])
 	// `connect_data` and return 'true'.
 	cli.set_update_connection_handler(
 		[](mqtt::connect_data& connData) {
-			string newUserName { "newuser" };
+			string newUserName{ "newuser" };
 			if (connData.get_user_name() == newUserName)
 				return false;
 
@@ -78,8 +46,8 @@ int main(int argc, char* argv[])
 		}
 	);
 
-	const vector<string> TOPICS { "data/#", "command" };
-	const vector<int> QOS { 0, 1 };
+	const vector<string> TOPICS{ "data/#", "command" };
+	const vector<int> QOS{ 0, 1 };
 
 	try {
 		cout << "Connecting to the MQTT server..." << flush;
@@ -102,7 +70,7 @@ int main(int argc, char* argv[])
 
 			if (msg) {
 				if (msg->get_topic() == "command" &&
-						msg->to_string() == "exit") {
+					msg->to_string() == "exit") {
 					cout << "Exit command received" << endl;
 					break;
 				}
@@ -114,6 +82,8 @@ int main(int argc, char* argv[])
 				while (!cli.is_connected()) {
 					this_thread::sleep_for(milliseconds(250));
 				}
+				//防止MQTT服务器未作持久化，重启后会话信息丢失导致重连没有订阅信息
+				cli.subscribe(TOPICS, QOS);
 				cout << "Re-established connection" << endl;
 			}
 		}
@@ -129,7 +99,7 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
- 	return 0;
+	return 0;
 }
 
 #endif

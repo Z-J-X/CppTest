@@ -85,6 +85,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(Lib)\mqtt\paho-c\include;$(Lib)\mqtt\paho-cpp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>$(Lib)\mqtt\paho-c\lib;$(Lib)\mqtt\paho-cpp\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -142,13 +144,22 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>paho-mqtt3a.lib;paho-mqttpp3-static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="consume.cpp" />
-    <ClCompile Include="publish.cpp" />
-    <ClCompile Include="sync_consume.cpp" />
-    <ClCompile Include="sync_publish.cpp" />
+    <ClCompile Include="asyncConsume.cpp" />
+    <ClCompile Include="asyncPublish.cpp" />
+    <ClCompile Include="asyncSpeedPublic.cpp" />
+    <ClCompile Include="asyncTopicPublic.cpp" />
+    <ClCompile Include="MqttHandle.cpp" />
+    <ClCompile Include="syncConsume.cpp" />
+    <ClCompile Include="syncPublish.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MqttHandle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

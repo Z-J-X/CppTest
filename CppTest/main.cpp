@@ -1,88 +1,71 @@
-#pragma warning (disable:4996)
-#include <iostream>
-#include <string>
-#include <fstream>
-#include"base64.h"
+
+#include<iostream>
+#include"thread_queue.h"
+#include <mutex>
+#include <condition_variable>
+#include <functional>
+
 using namespace std;
 
-template<class T>
-class Stream
+std::string_view strMsg1;
+void func(std::string_view ss)
+{
+	std::string s = "dasd";
+	std::string_view strMsg = s +"1234";
+	strMsg1 = strMsg;
+}
+
+std::string_view PrintStringView()
+{
+	std::string s = "How are you..";
+
+	std::string_view str_view = s;
+	return str_view;
+}
+
+std::string GetTime()
+{
+	std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds> tpNow =
+		std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::now());
+	time_t tt = std::chrono::system_clock::to_time_t(tpNow);//获取时间戳精确到秒
+
+	tm now{ 0 };
+	char res[24] = { 0 };
+#if defined WIN32 || WIN64
+	localtime_s(&now, &tt);
+	sprintf_s(res, _countof(res), "%02d%02d%02d%02d%02d%02d", (now.tm_year + 1900)%100, now.tm_mon + 1, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec);
+#else
+	localtime_r(&tt, &now);
+	sprintf(res, "%02d%02d%02d%02d%02d%02d", (now.tm_year + 1900) % 100, now.tm_mon + 1, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec);
+#endif
+	return std::string(res);
+}
+
+class A:public enable_shared_from_this<A>
 {
 public:
-	Stream(T& t):handle(t)
+	std::function<void()> func()
 	{
-		 
-	};
-	template<class D>
-	T& operator <<( D&& str)
-	{
-		handle << str;
-		return handle;
+		auto self = shared_from_this();
+		return [this, self]() {
+			std::cout << a << std::endl;;
+		};
 	}
-private:
-	T& handle;
+public:
+	std::string a;
 };
 
 int main()
 {
-	
-	//Stream<ostream> Test(std::cout);
-	//Test << "hello";
-	//Test << 10 << endl;
-	//string str = "dasdas";
-	//Test << str << endl;
-
-	//std::cout << "---------------------------------" << endl;
-	//fstream File;
-	//File.open("file.txt", std::ios::app);
-	//Stream<fstream> sTest(File);
-	//sTest << "dadadsa" << endl;
-	//sTest << "ok" << endl << "dasdasdasd" << endl;
-
-	const std::string str = base64_decode("AAAACcqLyPg=");
-	std::cout << str.size()<< std::endl;
-	char buf[100] = {0};
-	for (int i = 0; i < str.size(); i++)
+	std::function<void()> ff;
 	{
-		sprintf_s(buf + 2 * i, 3,"%02X", str[i]&0xff);
+		auto a = std::make_shared<A>();
+		a->a = "sdaasdas";
+		ff =  a->func();
 	}
-	std::string ret1(buf);
-	std::cout << ret1<<ret1.length() << std::endl;
 
-	std::string ss = "application/1/device/+/command/down";
-	std::cout << ss.size() << ss.length() << std::endl;
-	if (ss.rfind("down") != std::string::npos)
-	{
-		std::cout << "ok" << std::endl;
-	}
-	std::string str2;
-	std::cout << str2.size() << str2.length() << std::endl;;
-
-	char  ttt[] = "2022-02-08T02:54:22.179771394Z";
-	char retv[13] = { 0 };
-#if defined WIN32 || WIN64
-	sscanf_s(ttt, "20%2s-%2s-%2sT%2s:%2s:%2s", retv,13, retv + 2,3, retv + 4, 3, retv + 6, 3, retv + 8, 3, retv + 10, 3);
-#else
-	sscanf(ttt, "20%2s-%2s-%2sT%2s:%2s:%2s", retv, retv + 2, retv + 4, retv + 6, retv + 8, retv + 10);
-#endif
+	ff();
 	
-	std::string asdas(retv);
-	std::cout << asdas.size() << std::endl;
 
-	std::cout << "---------------------------------" << std::endl;
-	int* a = new int(1);
-	std::shared_ptr<int> ptr;
-	if(ptr == nullptr)
-	ptr = std::shared_ptr<int>(a);
-	std::cout << *ptr << std::endl;
 
-	int i = 0;
-	do
-	{
-		i++;
-		if (i == 1)
-			continue;
-	} while (0);
-	std::cout << i << std::endl;
-	throw runtime_error("das");
 }

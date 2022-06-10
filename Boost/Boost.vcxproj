@@ -147,8 +147,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="client.cpp" />
+    <ClCompile Include="checkDeadline.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="server.cpp" />
+    <ClCompile Include="tcp.cpp" />
     <ClCompile Include="udp.cpp" />
     <ClCompile Include="urldecode.cpp" />
   </ItemGroup>

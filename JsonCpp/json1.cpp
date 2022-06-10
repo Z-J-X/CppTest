@@ -131,11 +131,12 @@ Json::Value ReadFromString(std::string& strJson)
 
 		Json::CharReaderBuilder builder;
 		const std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
-		if (!reader->parse(strJson.c_str(), strJson.c_str() + rawJsonLength, &root, &err))
+		reader->parse(strJson.c_str(), strJson.c_str() + rawJsonLength, &root, &err);
+		/*if (!reader->parse(strJson.c_str(), strJson.c_str() + rawJsonLength, &root, &err))
 		{
 			std::cout << "error" << std::endl;
-			return false;
-		}
+			return root;
+		}*/
 
 		return root;
 	}
@@ -162,15 +163,11 @@ std::string WriteToString(Json::Value jsRoot)
 int main()
 {
 	try {
-		Json::Value root,test;
 
-		root["dsasd"].append(test);
-		root["a"].resize(0);
-		std::string str = "dasd+dasdas+ds";
-		std::cout << str.find("+") << std::endl;
-		std::cout << str.find("+",4+1) << std::endl;;
-		std::cout << WriteToString(root) << std::endl;
+		std::string str;
+		Json::Value a = Json::nullValue;
 
+		std::cout << a << std::endl;
 	}
 	catch (std::exception& ec)
 	{

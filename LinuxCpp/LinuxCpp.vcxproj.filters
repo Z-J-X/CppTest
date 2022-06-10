@@ -8,9 +8,4 @@
       <UniqueIdentifier>{a4aa155e-9f9c-4c44-a869-f44b5a71d87c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
 </Project>

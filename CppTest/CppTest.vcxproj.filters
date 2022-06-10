@@ -41,5 +41,8 @@
     <ClInclude Include="base64.h">
       <Filter>base64</Filter>
     </ClInclude>
+    <ClInclude Include="thread_queue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
