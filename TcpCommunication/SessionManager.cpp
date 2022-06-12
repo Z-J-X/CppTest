@@ -26,8 +26,11 @@ void SessionManager::Register(std::shared_ptr<Session> ptrSession)
 void SessionManager::Consume(const boost::system::error_code& ec,std::shared_ptr<Message> ptrMessage)
 {
 	if (ec)
+	{
 		std::cout << ec.message() << std::endl;
-	std::cout << "receive " << ptrMessage->m_ptrPayload->size() << " bytes: ";
+		return;
+	}
+	std::cout <<"Session Id: "<< ptrMessage ->m_ptrSession.get() << " receive " << ptrMessage->m_ptrPayload->size() << " bytes: ";
 	for (auto i : *(ptrMessage->m_ptrPayload))
 		std::cout << std::setiosflags(std::ios::uppercase) << std::hex << std::setw(2) << std::setfill('0') << (i & 0xff) << " ";
 	std::cout << std::endl;

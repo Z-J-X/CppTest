@@ -5,7 +5,7 @@
 using namespace std::placeholders;
 
 
-Session::Session(boost::asio::ip::tcp::socket socket):m_socket(std::move(socket)),m_buffer(1024), m_vecHearbeat(0), m_timerDeadline(m_socket.get_executor()), m_timerHearbeat(m_socket.get_executor()), m_msDeadline(0), m_msHearbeat(0)
+Session::Session(boost::asio::ip::tcp::socket&& socket):/*m_uiSessionId(this), */m_msDeadline(0), m_msHearbeat(0), m_socket(std::move(socket)), m_timerDeadline(m_socket.get_executor()), m_timerHearbeat(m_socket.get_executor()), m_vecBuffer(1024), m_vecHearbeat(0)
 {
 	
 }
@@ -14,19 +14,12 @@ void Session::Error(const boost::system::error_code& ec, std::string strMsg)
 {
 	m_fLogHandle(strMsg + ":" + ec.message(), "Error");
 	stop();
+	//if (m_fClseSocketCb != nullptr)
+		//m_fClseSocketCb(ec, shared_from_this());
 }
 
 void Session::start()
 {
-	if (m_msDeadline) //是否超时
-	{
-		m_timerDeadline.expires_after(std::chrono::milliseconds::max());// m_timerDeadline init
-		m_timerDeadline.async_wait(std::bind(&Session::CheckTimeout, shared_from_this()));
-	}
-
-	if(m_msHearbeat) // 是否发送心跳
-		Write();
-
 	Read();
 }
 
@@ -42,7 +35,11 @@ void Session::stop()
 void Session::SetDeadline(long long ms)
 {
 	if (ms > 0)
+	{
 		m_msDeadline = ms;
+		m_timerDeadline.expires_after(std::chrono::milliseconds::max());// m_timerDeadline init
+		m_timerDeadline.async_wait(std::bind(&Session::CheckTimeout, shared_from_this()));
+	}
 }
 
 void Session::SetHearbeat(long long ms, std::vector<char> vecHearbeat)
@@ -51,24 +48,30 @@ void Session::SetHearbeat(long long ms, std::vector<char> vecHearbeat)
 	{
 		m_msHearbeat = ms;
 		m_vecHearbeat = vecHearbeat;
+		Write();// start send hearbeat
 	}
 }
 
-void Session::SetLogHandle(std::function<void(std::string, std::string)> fLogHandle)
+void Session::SetLogHandle(log_handle fLogHandle)
 {
 	m_fLogHandle = fLogHandle;
 }
 
-void Session::SetConsumeHandle(std::function<void(const boost::system::error_code&, std::shared_ptr<Message>)> fConsumeHandle)
+void Session::SetConsumeHandle(msg_handle fMsgHandle)
 {
-	m_fConsumeHandle = fConsumeHandle;
+	m_fConsumeHandle = fMsgHandle;
+}
+
+void Session::SetCloseSocketCb(msg_handle fMsgHandle)
+{
+	m_fClseSocketCb = fMsgHandle;
 }
 
 void Session::Read()
 {
-	if(m_msDeadline) //是否超时
+	if(m_msDeadline) //是否使用超时处理
 		m_timerDeadline.expires_after(std::chrono::milliseconds(m_msDeadline));
-	m_socket.async_read_some(boost::asio::buffer(m_buffer), std::bind((void(Session::*)(const boost::system::error_code & ec, std::size_t bytes_transferred)) & Session::Read, shared_from_this(), _1, _2));
+	m_socket.async_read_some(boost::asio::buffer(m_vecBuffer), std::bind((void(Session::*)(const boost::system::error_code & ec, std::size_t bytes_transferred)) & Session::Read, shared_from_this(), _1, _2));
 }
 
 void Session::Read(const boost::system::error_code& ec, std::size_t bytes_transferred)
@@ -78,7 +81,7 @@ void Session::Read(const boost::system::error_code& ec, std::size_t bytes_transf
 	{
 		auto ptrMsg = std::make_shared<Message>();
 		ptrMsg->m_ptrSession = shared_from_this();
-		ptrMsg->m_ptrPayload = std::make_shared<std::vector<char>>(m_buffer.begin(), m_buffer.begin() + bytes_transferred);
+		ptrMsg->m_ptrPayload = std::make_shared<std::vector<char>>(m_vecBuffer.begin(), m_vecBuffer.begin() + bytes_transferred);
 		m_fConsumeHandle(ec,ptrMsg);
 	}
 	if (ec)
@@ -95,14 +98,14 @@ void Session::Write()
 	boost::asio::async_write(m_socket, boost::asio::buffer(m_vecHearbeat),
 		[this, self](const boost::system::error_code& error, std::size_t n) {
 			if (error)
-				return Error(error,"Write heartbeat");
+				return Error(error,"Write heartbeat");//断联处理需要通知到manager
 
 			m_timerHearbeat.expires_after(std::chrono::milliseconds(m_msHearbeat));
 			m_timerHearbeat.async_wait(std::bind((void(Session::*)()) & Session::Write, self));
 		});
 }
 
-bool Session::Write(std::shared_ptr<std::vector<char>> ptrBuffer, std::function<void(const boost::system::error_code&, std::shared_ptr<Message>)> handle)
+bool Session::Write(std::shared_ptr<std::vector<char>> ptrBuffer, msg_handle handle)
 {
 	if (!m_socket.is_open())
 		return false;
